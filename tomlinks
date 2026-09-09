@@ -3,6 +3,7 @@
 import configparser
 import os
 import shutil
+import sys
 
 
 class TomlinksException(Exception):
@@ -24,6 +25,7 @@ def parse(path):
         raise TomlinksException(f"there is no unnamed section in {path}/tomlinks.ini")
 
 def sync(src, dest):
+    print(f"{src} -> {dest}")
     if os.path.isdir(src):
         shutil.copytree(src, dest)
     elif os.path.isfile(src):
@@ -38,3 +40,14 @@ def restore(path):
 def collect(path):
     for k, v in parse(path).items():
         sync(v, k)
+
+if __name__ == "__main__":
+    command = None
+    for arg in sys.argv:
+        if command == None:
+            if arg == "restore":
+                command = restore
+            if arg == "collect":
+                command = collect
+        else:
+            command(arg)
