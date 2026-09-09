@@ -17,6 +17,7 @@ def process_tilda(section):
 
 def parse(path):
     config = configparser.ConfigParser(allow_unnamed_section=True)
+    config.optionxform = str
     config.read(f"{path}/tomlinks.ini")
     if configparser.UNNAMED_SECTION in config:
         section = config[configparser.UNNAMED_SECTION]
