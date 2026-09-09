@@ -2,7 +2,6 @@
 
 import configparser
 import os
-from os.path import isfile
 import shutil
 
 
