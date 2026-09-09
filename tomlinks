@@ -36,7 +36,7 @@ def sync(src, dest):
         elif os.path.isfile(dest):
             os.remove(dest)
     destParent = Path(dest).parent.absolute()
-    os.makedirs(destParent)
+    os.makedirs(destParent, exist_ok=True)
     if os.path.isdir(src):
         shutil.copytree(src, dest)
     elif os.path.isfile(src):
@@ -53,8 +53,8 @@ def collect(path):
 
 if __name__ == "__main__":
     command = None
-    for arg in sys.argv:
-        if command == None:
+    for arg in sys.argv[1:]:
+        if command is None:
             if arg == "restore":
                 command = restore
             if arg == "collect":
