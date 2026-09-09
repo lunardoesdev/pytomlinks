@@ -2,6 +2,8 @@
 
 import configparser
 import os
+from os.path import isfile
+import shutil
 
 
 class TomlinksException(Exception):
@@ -22,5 +24,13 @@ def parse(dir):
     else:
         raise TomlinksException(f"there is no unnamed section in {dir}/tomlinks.ini")
 
+def sync(src, dest):
+    if os.path.isdir(src):
+        shutil.copytree(src, dest)
+    elif os.path.isfile(src):
+        shutil.copy2(src, dest)
+    else:
+        print(f"not exist: {src}")
+
 for k, v in parse(".").items():
-    print(f"{k} = {v}")
+    sync(k, v)
