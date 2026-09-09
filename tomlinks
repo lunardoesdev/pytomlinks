@@ -4,6 +4,7 @@ import configparser
 import os
 import shutil
 import sys
+from pathlib import Path
 
 
 class TomlinksException(Exception):
@@ -26,12 +27,21 @@ def parse(path):
 
 def sync(src, dest):
     print(f"{src} -> {dest}")
+    if not os.path.exists(src):
+        print(f"not exist: {src}")
+        return
+    if os.path.exists(dest):
+        if os.path.isdir(dest):
+            shutil.rmtree(dest)
+        elif os.path.isfile(dest):
+            os.remove(dest)
+    destParent = Path(dest).parent.absolute()
+    os.makedirs(destParent)
     if os.path.isdir(src):
         shutil.copytree(src, dest)
     elif os.path.isfile(src):
         shutil.copy2(src, dest)
-    else:
-        print(f"not exist: {src}")
+
 
 def restore(path):
     for k, v in parse(path).items():
