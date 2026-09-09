@@ -7,7 +7,7 @@ import os
 class TomlinksException(Exception):
     pass
 
-def processTilda(section):
+def process_tilda(section):
     for k, v in section.items():
         section[k] = v.replace("~", os.path.expanduser("~"))
     return section
@@ -17,7 +17,7 @@ def parse(dir):
     config.read(f"{dir}/tomlinks.ini")
     if configparser.UNNAMED_SECTION in config:
         section = config[configparser.UNNAMED_SECTION]
-        section = processTilda(section)
+        section = process_tilda(section)
         return section
     else:
         raise TomlinksException(f"there is no unnamed section in {dir}/tomlinks.ini")
