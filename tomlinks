@@ -1,1 +1,9 @@
 #!/bin/env python3
+import configparser
+
+config = configparser.ConfigParser(allow_unnamed_section=True)
+config.read("tomlinks.ini")
+
+if configparser.UNNAMED_SECTION in config:
+    for key, val in config[configparser.UNNAMED_SECTION].items():
+        print(f"{key} = {val}")
