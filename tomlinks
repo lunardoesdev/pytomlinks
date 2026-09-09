@@ -13,15 +13,15 @@ def process_tilda(section):
         section[k] = v.replace("~", os.path.expanduser("~"))
     return section
 
-def parse(dir):
+def parse(path):
     config = configparser.ConfigParser(allow_unnamed_section=True)
-    config.read(f"{dir}/tomlinks.ini")
+    config.read(f"{path}/tomlinks.ini")
     if configparser.UNNAMED_SECTION in config:
         section = config[configparser.UNNAMED_SECTION]
         section = process_tilda(section)
         return section
     else:
-        raise TomlinksException(f"there is no unnamed section in {dir}/tomlinks.ini")
+        raise TomlinksException(f"there is no unnamed section in {path}/tomlinks.ini")
 
 def sync(src, dest):
     if os.path.isdir(src):
@@ -31,5 +31,10 @@ def sync(src, dest):
     else:
         print(f"not exist: {src}")
 
-for k, v in parse(".").items():
-    sync(k, v)
+def restore(path):
+    for k, v in parse(path).items():
+        sync(k, v)
+
+def collect(path):
+    for k, v in parse(path).items():
+        sync(v, k)
