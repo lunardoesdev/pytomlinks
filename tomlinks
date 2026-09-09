@@ -45,11 +45,11 @@ def sync(src, dest):
 
 def restore(path):
     for k, v in parse(path).items():
-        sync(k, v)
+        sync(os.path.join(path, k), v)
 
 def collect(path):
     for k, v in parse(path).items():
-        sync(v, k)
+        sync(v, os.path.join(path, k))
 
 if __name__ == "__main__":
     command = None
