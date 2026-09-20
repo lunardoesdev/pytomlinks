@@ -118,7 +118,8 @@ Notes:
 
 - `<pkg>` arguments are package directories containing `tomlinks.ini`; several may be given at once (`tomlinks restore fish git zsh`)
 - `restore *` / `collect *` rely on shell globbing — run it from your dotfiles root to hit every package
-- `restore` replaces whatever is at the destination before copying
+- each command plans and applies all mappings transactionally; interrupted transactions are recovered on the next invocation
+- a successful transaction replaces each destination atomically; if any mapping cannot be prepared or committed, earlier mappings are rolled back
 - if a source file listed in the ini is missing, it's skipped with an error message
 
 ## System configs (/etc) via sudo
