@@ -52,13 +52,40 @@ def collect(path):
     for k, v in parse(path).items():
         sync(v, os.path.join(path, k))
 
-if __name__ == "__main__":
+def print_help():
+    print("""Usage:
+  tomlinks restore <package>...
+  tomlinks collect <package>...
+  tomlinks --help
+
+Commands:
+  restore             Copy package files to their system destinations.
+  collect             Copy system files back into the package.
+
+Use --help to show this message.""")
+
+
+def main(args):
+    if not args:
+        print_help()
+        return
+
     command = None
-    for arg in sys.argv[1:]:
+    for arg in args:
+        if arg in ("--help", "help"):
+            print_help()
+            return
         if command is None:
             if arg == "restore":
                 command = restore
-            if arg == "collect":
+            elif arg == "collect":
                 command = collect
         else:
             command(arg)
+
+    if command is None:
+        print("command wasn't specified; use --help for usage information")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
