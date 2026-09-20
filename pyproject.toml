@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tomlinks"
+version = "1.0.0"
+description = "Transactional dotfile and configuration manager"
+readme = "readme.md"
+requires-python = ">=3.7"
+authors = [
+    {name = "Your Name", email = "your.email@example.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: POSIX :: BSD",
+    "Operating System :: MacOS",
+]
+
+[project.scripts]
+tomlinks = "tomlinks:main"
+
+[project.urls]
+Homepage = "https://github.com/yourusername/pytomlinks"

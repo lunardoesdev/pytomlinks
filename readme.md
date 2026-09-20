@@ -8,11 +8,32 @@ The idea: your configs are split into **backup packages** — plain directories 
 
 ## Installation
 
+### Method 1: Install script (simple)
+
 ```bash
 ./install.sh
 ```
 
-Or just run the script: `./tomlinks`.
+This copies `tomlinks.py` to `/usr/local/bin/tomlinks`.
+
+### Method 2: pip (for development or virtual environments)
+
+```bash
+# Regular installation
+pip install .
+
+# Or editable install (changes to code take effect immediately)
+pip install -e .
+
+# Uninstall
+pip uninstall tomlinks
+```
+
+### Method 3: Run directly
+
+```bash
+./tomlinks.py restore <package>
+```
 
 ## The concept: backup packages
 
