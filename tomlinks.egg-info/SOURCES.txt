@@ -1,0 +1,9 @@
+pyproject.toml
+readme.md
+tomlinks.py
+tomlinks.egg-info/PKG-INFO
+tomlinks.egg-info/SOURCES.txt
+tomlinks.egg-info/dependency_links.txt
+tomlinks.egg-info/entry_points.txt
+tomlinks.egg-info/requires.txt
+tomlinks.egg-info/top_level.txt

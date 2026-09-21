@@ -21,5 +21,11 @@ classifiers = [
 [project.scripts]
 tomlinks = "tomlinks:main"
 
+[tool.setuptools]
+py-modules = ["tomlinks"]
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
 [project.urls]
 Homepage = "https://github.com/yourusername/pytomlinks"
