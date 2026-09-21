@@ -6,7 +6,15 @@ Single-file Python script that copies configs between backup packages and system
 
 ## Installation
 
-### uv (recommended)
+### install.sh (recommended)
+
+```bash
+./install.sh
+```
+
+Copies `tomlinks.py` to `/usr/local/bin/tomlinks` (requires sudo).
+
+### uv
 
 ```bash
 uv tool install .
@@ -16,21 +24,6 @@ uv tool install .
 
 ```bash
 pip install .
-```
-
-### Run directly
-
-```bash
-python tomlinks.py restore <package>
-```
-## The concept: backup packages
-
-A backup package is any directory containing a `tomlinks.ini`. The backed-up files sit **inside** the package, next to the manifest:
-
-```
-fish/
-├── tomlinks.ini      <- the manifest
-└── config.fish      <- the backed-up file itself
 ```
 
 Each line of `tomlinks.ini` maps a file in the package to its place on the system:
@@ -160,25 +153,29 @@ Then:
 sudo tomlinks collect ~/system/ssh   # save system files into the package
 sudo tomlinks restore ~/system/ssh   # put them back (fresh install, new server)
 ```
-
-Your user packages stay untouched by sudo runs, and vice versa.
-
 ## Examples
 
-See [`examples/`](examples/) — a minimal working set:
+Example packages in `examples/`:
 
-```
-examples/
-├── fish/           # config.fish -> ~/.config/fish/config.fish
-└── git/            # gitconfig   -> ~/.gitconfig
-```
-
-Try it out safely:
+### fish shell
 
 ```bash
 cd examples
-../tomlinks collect fish    # pulls your real fish config into the example package
+tomlinks restore fish    # install fish config to ~/.config/fish/
+# edit your config...
+tomlinks collect fish    # backup changes to the package
 ```
+
+### git
+
+```bash
+cd examples
+tomlinks restore git     # install .gitconfig and .gitignore_global to ~/
+```
+
+Each example package contains:
+- `tomlinks.ini` — manifest mapping package files to system locations
+- Sample config files you can customize
 
 ## Development
 
