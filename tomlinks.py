@@ -14,7 +14,7 @@ try:
     import fcntl
 except ImportError:  # pragma: no cover - the supported platform provides fcntl
     fcntl = None
-
+VERSION = "1.0.0"
 
 class TomlinksException(Exception):
     pass
@@ -478,7 +478,7 @@ def collect(*paths):
 
 
 def print_help():
-    print("""Usage:
+    print(f"""Usage:
   tomlinks restore <package>...
   tomlinks collect <package>...
   tomlinks --help
@@ -488,7 +488,9 @@ Commands:
   collect             Copy system files back into the package.
 
 Each command applies all mappings transactionally and recovers interrupted transactions on the next invocation.
-Use --help to show this message.""")
+
+Version: {VERSION}
+""")
 
 
 def main(args):
