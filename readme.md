@@ -1,40 +1,28 @@
-# pytomlinks
+# tomlinks
 
-rewrite of tomlinks so a single-file python script
+Transactional dotfile and configuration manager.
 
-Simple backup/restore tool for package-based dotfiles.
-
-The idea: your configs are split into **backup packages** — plain directories that hold both the backed-up files and a small `tomlinks.ini` manifest saying where each file belongs on the system. No symlinks, no daemon, no database. Just INI and copies.
+Single-file Python script that copies configs between backup packages and system locations. No symlinks, no daemon, no database—just INI manifests and atomic file operations.
 
 ## Installation
 
-### Method 1: Install script (simple)
+### uv (recommended)
 
 ```bash
-./install.sh
+uv tool install .
 ```
 
-This copies `tomlinks.py` to `/usr/local/bin/tomlinks`.
-
-### Method 2: pip (for development or virtual environments)
+### pip
 
 ```bash
-# Regular installation
 pip install .
-
-# Or editable install (changes to code take effect immediately)
-pip install -e .
-
-# Uninstall
-pip uninstall tomlinks
 ```
 
-### Method 3: Run directly
+### Run directly
 
 ```bash
-./tomlinks.py restore <package>
+python tomlinks.py restore <package>
 ```
-
 ## The concept: backup packages
 
 A backup package is any directory containing a `tomlinks.ini`. The backed-up files sit **inside** the package, next to the manifest:
@@ -129,20 +117,25 @@ tomlinks restore fish git
 
 ## Commands
 
-| Command | Direction | Description |
-|---|---|---|
-| `tomlinks restore <pkg>...` | package → system | Copy each file from the package to its destination |
-| `tomlinks collect <pkg>...` | system → package | Copy each destination file back into the package (backup) |
-| `tomlinks help` | — | Show help |
+```bash
+tomlinks restore <pkg>...   # package → system: install configs
+tomlinks collect <pkg>...   # system → package: backup configs
+tomlinks help               # show help
+```
 
-Notes:
+- `<pkg>` — package directory containing `tomlinks.ini`
+- Multiple packages: `tomlinks restore fish git zsh`
+- All packages: `tomlinks restore *` (shell expands glob)
 
-- `<pkg>` arguments are package directories containing `tomlinks.ini`; several may be given at once (`tomlinks restore fish git zsh`)
-- `restore *` / `collect *` rely on shell globbing — run it from your dotfiles root to hit every package
-- each command plans and applies all mappings transactionally; interrupted transactions are recovered on the next invocation
-- a successful transaction replaces each destination atomically; if any mapping cannot be prepared or committed, earlier mappings are rolled back
-- if a source file listed in the ini is missing, it's skipped with an error message
+### Transactions
 
+Each command runs transactionally:
+- All operations are staged first
+- Commit is atomic (staging directory renamed into place)
+- Interrupted transactions roll back automatically on next run
+- Recovery journal is written before any filesystem changes
+
+If any file cannot be prepared, all changes are discarded.
 ## System configs (/etc) via sudo
 
 Keep two separate repos — one for your user, one for root-owned system files — because `~` always expands to whoever runs the command:
@@ -186,3 +179,22 @@ Try it out safely:
 cd examples
 ../tomlinks collect fish    # pulls your real fish config into the example package
 ```
+
+## Development
+
+### Running tests
+
+```bash
+./test.sh              # all tests
+./test.sh -v           # verbose
+./test.sh -k restore   # filter by name
+```
+
+Tests use `uvx pytest` (installs pytest isolated, no dependency pollution).
+
+### Test coverage
+
+- Basic operations: restore, collect, multiple packages
+- Transactions: rollback on error, recovery from crash
+- Edge cases: symlinks, Unicode filenames, whitespace in paths, nested directories
+- CLI: argument handling, help text
