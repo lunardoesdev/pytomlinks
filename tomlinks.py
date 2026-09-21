@@ -478,18 +478,28 @@ def collect(*paths):
 
 
 def print_help():
-    print(f"""Usage:
+    c = {
+        "bold": "\033[1m",
+        "green": "\033[1;32m",
+        "blue": "\033[1;36m",
+        "reset": "\033[0m",
+    }
+    print(f"""{c["green"]}╭─────────────────────────────────────────────────────╮{c["reset"]}
+{c["green"]}│{c["reset"]} {c["bold"]}tomlinks{c["reset"]} — Transactional dotfile manager  {c["bold"]}{VERSION}{c["reset"]} {c["green"]}│{c["reset"]}
+{c["green"]}╰─────────────────────────────────────────────────────╯{c["reset"]}
+
+{c["bold"]}Usage:{c["reset"]}
   tomlinks restore <package>...
   tomlinks collect <package>...
   tomlinks --help
 
-Commands:
-  restore             Copy package files to their system destinations.
-  collect             Copy system files back into the package.
+{c["bold"]}Commands:{c["reset"]}
+  {c["green"]}restore{c["reset"]}  Copy package files to their system destinations.
+  {c["green"]}collect{c["reset"]}  Copy system files back into the package.
 
-Each command applies all mappings transactionally and recovers interrupted transactions on the next invocation.
-
-Version: {VERSION}
+{c["blue"]}Note:{c["reset"]}
+  Each command applies all mappings transactionally and recovers
+  interrupted transactions on the next invocation.
 """)
 
 
