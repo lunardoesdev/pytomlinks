@@ -1,2 +1,2 @@
-#!/bin/bash
-uvx pytest test_tomlinks.py -v
+#!/bin/sh
+exec uvx pytest "$@"

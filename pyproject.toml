@@ -27,14 +27,8 @@ tomlinks = "tomlinks:main"
 [tool.setuptools]
 py-modules = ["tomlinks"]
 
-[project.optional-dependencies]
-dev = ["pytest>=7.0"]
 
 [project.urls]
 Homepage = "https://github.com/yourusername/pytomlinks"
 
-[dependency-groups]
-dev = [
-    "pytest>=7.4.4",
-]
 
