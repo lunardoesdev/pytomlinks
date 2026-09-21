@@ -1,2 +1,2 @@
 #!/bin/sh
-exec uvx pytest "$@"
+exec uvx pytest $@
