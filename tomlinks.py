@@ -31,15 +31,21 @@ def process_tilda(section):
     return section
 
 
+UNNAMED_SECTION = "__tomlinks_unnamed__"
+
+
 def parse(path):
-    config = configparser.ConfigParser(allow_unnamed_section=True)
+    ini = Path(path) / "tomlinks.ini"
+    text = ini.read_text() if ini.exists() else ""
+    # configparser only gained native unnamed-section support in Python 3.13.
+    # Prepend a sentinel header so keys outside any section still parse.
+    config = configparser.ConfigParser()
     config.optionxform = str
-    config.read(f"{path}/tomlinks.ini")
-    if configparser.UNNAMED_SECTION in config:
-        section = config[configparser.UNNAMED_SECTION]
-        section = process_tilda(section)
-        return section
-    raise TomlinksException(f"there is no unnamed section in {path}/tomlinks.ini")
+    config.read_string(f"[{UNNAMED_SECTION}]\n{text}")
+    section = config[UNNAMED_SECTION]
+    if not section:
+        raise TomlinksException(f"there is no unnamed section in {path}/tomlinks.ini")
+    return process_tilda(section)
 
 
 def _absolute(path):
@@ -113,6 +119,17 @@ def _lock():
         stream.close()
         raise TomlinksException(f"cannot acquire transaction lock: {exc}") from exc
     return stream
+
+
+def _unlock(lock_stream):
+    try:
+        fcntl.flock(lock_stream.fileno(), fcntl.LOCK_UN)
+    finally:
+        lock_stream.close()
+        try:
+            os.unlink(LOCK_PATH)
+        except FileNotFoundError:
+            pass
 
 
 def _missing_parent_dirs(path):
@@ -454,8 +471,7 @@ def run_transaction(operations, created_parents=None):
         _recover_transactions()
         _run_transaction_locked(operations, created_parents or [])
     finally:
-        fcntl.flock(lock_stream.fileno(), fcntl.LOCK_UN)
-        lock_stream.close()
+        _unlock(lock_stream)
 
 
 def _execute(mode, package_paths):
@@ -465,8 +481,7 @@ def _execute(mode, package_paths):
         operations, created_parents = _plan(mode, package_paths)
         _run_transaction_locked(operations, created_parents)
     finally:
-        fcntl.flock(lock_stream.fileno(), fcntl.LOCK_UN)
-        lock_stream.close()
+        _unlock(lock_stream)
 
 
 def restore(*paths):
